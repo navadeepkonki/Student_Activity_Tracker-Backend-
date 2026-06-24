@@ -1,28 +1,35 @@
 package com.student.tracker.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.student.tracker.model.User;
-import com.student.tracker.service.UserService;
+import com.student.tracker.dto.AuthResponse;
+import com.student.tracker.dto.LoginRequest;
+import com.student.tracker.dto.RegisterRequest;
+import com.student.tracker.service.AuthService;
 
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin("*")
 public class AuthController {
-    private final UserService userService;
 
-    public AuthController(UserService userService) {
-        this.userService = userService;
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
+    public ResponseEntity<AuthResponse> register(
+            @RequestBody RegisterRequest request) {
 
-        User savedUser = userService.saveUser(user);
-
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        return ResponseEntity.ok(authService.register(request));
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(
+            @RequestBody LoginRequest request) {
+
+        return ResponseEntity.ok(authService.authenticate(request));
+    }
 }
